@@ -10,6 +10,9 @@
   <version>1.0-SNAPSHOT</version>
 
   <properties>
+
+    <javafx.version>21.0.2</javafx.version>
+
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
     <java.version>17</java.version>
@@ -18,4 +21,36 @@
     <maven.compiler.target>17</maven.compiler.target>
   </properties>
 
+  <dependencies>
+
+    <dependency>
+      <groupId>org.openjfx</groupId>
+      <artifactId>javafx-controls</artifactId>
+      <version>${javafx.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.openjfx</groupId>
+      <artifactId>javafx-fxml</artifactId>
+      <version>${javafx.version}</version>
+    </dependency>
+
+  </dependencies>
+
+  <build>
+    <plugins>
+
+      <plugin>
+        <groupId>org.openjfx</groupId>
+        <artifactId>javafx-maven-plugin</artifactId>
+        <version>0.0.8</version>
+        <configuration>
+          <mainClass>pe.edu.upeu.App</mainClass>
+        </configuration>
+      </plugin>
+
+    </plugins>
+  </build>
+
 </project>
+
