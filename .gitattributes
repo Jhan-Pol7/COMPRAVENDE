@@ -1,0 +1,6 @@
+*.fxml linguist-vendored=true
+*.jrxml linguist-vendored=true
+*.sql linguist-vendored=true
+*.properties linguist-vendored=true
+*.xml linguist-vendored=true
+*.md linguist-documentation=true
