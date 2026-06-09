@@ -44,11 +44,10 @@ public class ProductoController {
     private final ProductoDAO dao = new ProductoDAO();
     private ObservableList<Producto> lista;
 
-    // Guarda temporalmente los bytes de la imagen seleccionada.
-    // Se usa al guardar o actualizar el producto.
+    // Guarda temporalmente los bytes de la imagen seleccionada
     private byte[] imagenSeleccionada = null;
 
-    // Usuario logueado (recibido desde el Login)
+    // Usuario logueado recibido desde el Login
     private Usuario usuarioActual;
 
     // =====================================================
@@ -66,8 +65,7 @@ public class ProductoController {
 
         cargarDatos();
 
-        // Cuando el usuario selecciona una fila,
-        // carga sus datos en el formulario incluyendo la foto
+        // Al seleccionar una fila, carga sus datos en el formulario
         tablaProductos.getSelectionModel()
                 .selectedItemProperty()
                 .addListener((obs, oldSel, newSel) -> {
@@ -87,7 +85,7 @@ public class ProductoController {
     // =====================================================
     // CARGAR FORMULARIO
     // Rellena los campos con los datos del producto seleccionado.
-    // Si tiene imagen en BD, la muestra en el ImageView.
+    // Si tiene imagen en BD la muestra; si no, muestra sin-foto.png
     // =====================================================
     private void cargarFormulario(Producto p) {
 
@@ -96,29 +94,31 @@ public class ProductoController {
         txtPrecio.setText(String.valueOf(p.getPrecio()));
         txtStock.setText(String.valueOf(p.getStock()));
 
-        // Si el producto tiene imagen guardada en BD,
-        // convierte los bytes a Image y la muestra
         if (p.getImagen() != null) {
+            // Convierte los bytes de la BD a Image y la muestra
             Image img = new Image(new ByteArrayInputStream(p.getImagen()));
             imgProducto.setImage(img);
-            imagenSeleccionada = p.getImagen(); // mantiene la foto actual
+            imagenSeleccionada = p.getImagen();
         } else {
-            // Si no tiene foto, limpia el ImageView
-            imgProducto.setImage(null);
+            // Si no tiene foto, muestra la imagen por defecto desde resources
+            Image sinFoto = new Image(
+                    getClass().getResourceAsStream(
+                            "/pe/edu/upeu/img/sin-foto.png"
+                    )
+            );
+            imgProducto.setImage(sinFoto);
             imagenSeleccionada = null;
         }
     }
 
     // =====================================================
     // SELECCIONAR FOTO
-    // Abre el explorador de archivos para elegir una imagen.
-    // Muestra la imagen al instante en el ImageView.
-    // Guarda los bytes en imagenSeleccionada para luego persistir.
+    // Abre explorador de archivos, muestra la imagen al instante
+    // y guarda sus bytes en imagenSeleccionada para persistirla
     // =====================================================
     @FXML
     public void seleccionarFoto() {
 
-        // FileChooser filtra solo imágenes
         FileChooser chooser = new FileChooser();
         chooser.setTitle("Seleccionar imagen del producto");
         chooser.getExtensionFilters().add(
@@ -127,12 +127,11 @@ public class ProductoController {
                 )
         );
 
-        // Abre el diálogo y espera la selección del usuario
         File archivo = chooser.showOpenDialog(null);
 
         if (archivo != null) {
             try {
-                // Lee todos los bytes del archivo seleccionado
+                // Lee los bytes del archivo para guardarlos en la BD
                 imagenSeleccionada = Files.readAllBytes(archivo.toPath());
 
                 // Muestra la imagen inmediatamente en el formulario
@@ -172,8 +171,7 @@ public class ProductoController {
             p.setPrecio(Double.parseDouble(txtPrecio.getText()));
             p.setStock(Integer.parseInt(txtStock.getText()));
 
-            // Asigna los bytes de la imagen seleccionada.
-            // Si no se eligió foto, queda null.
+            // Asigna los bytes de la imagen; null si no se eligió foto
             p.setImagen(imagenSeleccionada);
 
             dao.guardar(p);
@@ -201,8 +199,7 @@ public class ProductoController {
             p.setPrecio(Double.parseDouble(txtPrecio.getText()));
             p.setStock(Integer.parseInt(txtStock.getText()));
 
-            // Si el usuario seleccionó una foto nueva, se actualiza.
-            // Si no seleccionó nada, mantiene la foto anterior (ya está en imagenSeleccionada).
+            // Actualiza con la foto nueva o mantiene la anterior
             p.setImagen(imagenSeleccionada);
 
             dao.actualizar(p);
@@ -216,7 +213,7 @@ public class ProductoController {
 
     // =====================================================
     // ELIMINAR
-    // Borra el producto seleccionado (y su imagen BLOB)
+    // Borra el producto seleccionado y su imagen BLOB
     // =====================================================
     @FXML
     public void eliminar() {
@@ -231,15 +228,15 @@ public class ProductoController {
 
     // =====================================================
     // LIMPIAR
-    // Resetea el formulario, la imagen y la variable temporal
+    // Resetea formulario, ImageView y bytes temporales
     // =====================================================
     private void limpiar() {
         txtNombre.clear();
         txtDescripcion.clear();
         txtPrecio.clear();
         txtStock.clear();
-        imgProducto.setImage(null);  // limpia la foto del formulario
-        imagenSeleccionada = null;   // resetea los bytes temporales
+        imgProducto.setImage(null);
+        imagenSeleccionada = null;
     }
 
     // =====================================================

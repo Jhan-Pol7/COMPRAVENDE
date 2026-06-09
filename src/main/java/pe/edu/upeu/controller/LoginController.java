@@ -44,26 +44,24 @@ public class LoginController {
     }
 
     private void abrirSistema() {
-
         try {
-
-            FXMLLoader loader =
-                    new FXMLLoader(getClass()
-                            .getResource("/pe/edu/upeu/view/ProductoView.fxml"));
-
+            // Ahora abre la ventana principal con menú lateral
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/pe/edu/upeu/view/MainView.fxml")
+            );
             Parent root = loader.load();
 
             Stage stage = new Stage();
             stage.setTitle("CompraVende");
-
             stage.setScene(new Scene(root));
             stage.show();
 
-            // cerrar login
+            // Cierra la ventana de login
             txtUser.getScene().getWindow().hide();
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-}
+        }
+    

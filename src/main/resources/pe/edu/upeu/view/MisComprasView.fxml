@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="pe.edu.upeu.controller.MisComprasController">
+
+    <top>
+        <Label text="MIS COMPRAS"
+               style="-fx-font-size:16; -fx-font-weight:bold; -fx-padding:10;"/>
+    </top>
+
+    <center>
+        <!-- Tabla con el historial de compras del usuario -->
+        <TableView fx:id="tablaCompras">
+            <columns>
+                <TableColumn fx:id="colId"       text="N°"       prefWidth="50"/>
+                <TableColumn fx:id="colProducto" text="Producto" prefWidth="200"/>
+                <TableColumn fx:id="colPrecio"   text="Precio"   prefWidth="100"/>
+                <TableColumn fx:id="colFecha"    text="Fecha"    prefWidth="150"/>
+            </columns>
+        </TableView>
+    </center>
+
+    <bottom>
+        <HBox style="-fx-padding:10;">
+            <!-- Al hacer clic genera el ticket PDF de la compra seleccionada -->
+            <Button text="Imprimir Ticket"
+                    onAction="#imprimirTicket"/>
+        </HBox>
+    </bottom>
+
+</BorderPane>

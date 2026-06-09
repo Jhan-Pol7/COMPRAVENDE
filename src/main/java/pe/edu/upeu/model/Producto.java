@@ -7,23 +7,15 @@ public class Producto {
     private String descripcion;
     private double precio;
     private int stock;
-
-    // Campo nuevo: guarda la imagen como arreglo de bytes (BLOB en la BD)
     private byte[] imagen;
 
+    // Estado del producto: DISPONIBLE o VENDIDO
+    private String estado;
+
+    // ID del usuario que publicó el producto (vendedor)
+    private int idVendedor;
+
     public Producto() {}
-
-    public Producto(int id, String nombre, String descripcion,
-                    double precio, int stock, byte[] imagen) {
-        this.id = id;
-        this.nombre = nombre;
-        this.descripcion = descripcion;
-        this.precio = precio;
-        this.stock = stock;
-        this.imagen = imagen;
-    }
-
-    // ---- Getters y Setters existentes ----
 
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
@@ -40,8 +32,12 @@ public class Producto {
     public int getStock() { return stock; }
     public void setStock(int stock) { this.stock = stock; }
 
-    // ---- Getter y Setter nuevo para imagen ----
-
     public byte[] getImagen() { return imagen; }
     public void setImagen(byte[] imagen) { this.imagen = imagen; }
+
+    public String getEstado() { return estado; }
+    public void setEstado(String estado) { this.estado = estado; }
+
+    public int getIdVendedor() { return idVendedor; }
+    public void setIdVendedor(int idVendedor) { this.idVendedor = idVendedor; }
 }

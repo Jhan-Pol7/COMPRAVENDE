@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<!-- Vista del catálogo: barra de búsqueda arriba + tarjetas abajo -->
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="pe.edu.upeu.controller.CatalogoController">
+
+    <!-- ===== BARRA DE BÚSQUEDA Y FILTROS ===== -->
+    <top>
+        <HBox spacing="10" style="-fx-padding:10;">
+
+            <!-- Campo de texto: filtra productos en tiempo real -->
+            <TextField fx:id="txtBuscar"
+                       promptText="Buscar producto..."
+                       prefWidth="250"/>
+
+            <!-- Filtro por precio mínimo -->
+            <TextField fx:id="txtPrecioMin"
+                       promptText="Precio mín"
+                       prefWidth="100"/>
+
+            <!-- Filtro por precio máximo -->
+            <TextField fx:id="txtPrecioMax"
+                       promptText="Precio máx"
+                       prefWidth="100"/>
+
+            <!-- Botón que aplica el filtro de precio -->
+            <Button text="Filtrar"
+                    onAction="#filtrarPrecio"/>
+
+            <!-- Botón que limpia todos los filtros -->
+            <Button text="Limpiar"
+                    onAction="#limpiarFiltros"/>
+
+        </HBox>
+    </top>
+
+    <!-- ===== ÁREA DE TARJETAS ===== -->
+    <!-- ScrollPane permite desplazarse si hay muchos productos -->
+    <center>
+        <ScrollPane fitToWidth="true">
+
+            <!-- FlowPane acomoda las tarjetas en filas automáticamente -->
+            <FlowPane fx:id="flowProductos"
+                      hgap="15" vgap="15"
+                      style="-fx-padding:15;"/>
+
+        </ScrollPane>
+    </center>
+
+</BorderPane>

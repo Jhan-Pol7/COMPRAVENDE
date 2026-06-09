@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration>
+
+    <!-- ===== CONSOLA ===== -->
+    <!-- Muestra los logs en la consola de IntelliJ durante desarrollo -->
+    <appender name="CONSOLA" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss} [%level] %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- ===== ARCHIVO ===== -->
+    <!-- Guarda todos los logs en un archivo .log dentro de la carpeta logs/ -->
+    <appender name="ARCHIVO" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/compravende.log</file>
+
+        <!-- Rota el archivo: uno por día, máximo 30 días guardados -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>logs/compravende-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%level] %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Nivel raíz: INFO registra info, advertencias y errores -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLA"/>
+        <appender-ref ref="ARCHIVO"/>
+    </root>
+
+</configuration>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="pe.edu.upeu.controller.MainController"
+            prefWidth="900" prefHeight="600">
+
+    <!-- ===== MENÚ LATERAL ===== -->
+    <left>
+        <VBox styleClass="menu-lateral" prefWidth="150">
+
+            <!-- Nombre y rol del usuario logueado -->
+            <Label fx:id="lblUsuario" styleClass="label-usuario"/>
+            <Label fx:id="lblRol"     styleClass="label-rol"/>
+
+            <Separator style="-fx-background-color:#4a6278; -fx-padding:5 0 5 0;"/>
+
+            <!-- Botones de navegación con estilo del menú -->
+            <Button fx:id="btnProductos"  text="Productos"   maxWidth="Infinity"
+                    styleClass="btn-menu" onAction="#irProductos"/>
+            <Button fx:id="btnCatalogo"   text="Catálogo"    maxWidth="Infinity"
+                    styleClass="btn-menu" onAction="#irCatalogo"/>
+            <Button fx:id="btnMisCompras" text="Mis Compras" maxWidth="Infinity"
+                    styleClass="btn-menu" onAction="#irMisCompras"/>
+            <Button fx:id="btnMisVentas"  text="Mis Ventas"  maxWidth="Infinity"
+                    styleClass="btn-menu" onAction="#irMisVentas"/>
+
+            <Separator style="-fx-background-color:#4a6278;"/>
+
+            <!-- Botón rojo de cerrar sesión -->
+            <Button text="Cerrar sesión" maxWidth="Infinity"
+                    styleClass="btn-cerrar" onAction="#cerrarSesion"/>
+
+        </VBox>
+    </left>
+
+    <!-- ===== PANEL DE CONTENIDO ===== -->
+    <center>
+        <StackPane fx:id="contenedor"/>
+    </center>
+
+</BorderPane>

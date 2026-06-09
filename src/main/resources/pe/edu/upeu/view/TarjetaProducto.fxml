@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+<!-- Tarjeta individual de producto para el catálogo.
+     Se instancia una por cada producto encontrado. -->
+<VBox spacing="5"
+      alignment="CENTER"
+      style="-fx-padding:10; -fx-border-color:#cccccc; -fx-border-radius:8;
+             -fx-background-color:white; -fx-background-radius:8;"
+      prefWidth="180"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="pe.edu.upeu.controller.TarjetaController">
+
+    <!-- Foto del producto (150x150) -->
+    <ImageView fx:id="imgProducto"
+               fitWidth="150" fitHeight="150"
+               preserveRatio="true"/>
+
+    <!-- Nombre del producto -->
+    <Label fx:id="lblNombre"
+           style="-fx-font-weight:bold; -fx-font-size:13;"
+           wrapText="true"/>
+
+    <!-- Precio del producto -->
+    <Label fx:id="lblPrecio"
+           style="-fx-text-fill:#27ae60; -fx-font-size:12;"/>
+
+    <!-- Botón para ver el detalle o comprar (U09) -->
+    <Button text="Ver detalle"
+            maxWidth="Infinity"
+            onAction="#verDetalle"/>
+
+</VBox>
