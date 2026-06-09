@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<!-- ================= VISTA DE VENTAS ================= -->
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="pe.edu.upeu.controller.VentaController">
+
+    <!-- ================= ARRIBA: PRODUCTOS ================= -->
+    <top>
+        <VBox spacing="10" style="-fx-padding:10;">
+
+            <Label text="PRODUCTOS DISPONIBLES"/>
+
+            <TableView fx:id="tablaProductos">
+                <columns>
+                    <TableColumn fx:id="colId" text="ID"/>
+                    <TableColumn fx:id="colNombre" text="Nombre"/>
+                    <TableColumn fx:id="colPrecio" text="Precio"/>
+                    <TableColumn fx:id="colStock" text="Stock"/>
+                </columns>
+            </TableView>
+
+        </VBox>
+    </top>
+
+    <!-- ================= CENTRO: CARRITO ================= -->
+    <center>
+        <VBox spacing="10" style="-fx-padding:10;">
+
+            <Label text="CARRITO DE COMPRA"/>
+
+            <TableView fx:id="tablaCarrito">
+                <columns>
+                    <TableColumn fx:id="cNombre" text="Producto"/>
+                    <TableColumn fx:id="cCantidad" text="Cantidad"/>
+                    <TableColumn fx:id="cSubtotal" text="Subtotal"/>
+                </columns>
+            </TableView>
+
+        </VBox>
+    </center>
+
+    <!-- ================= ABAJO: ACCIONES ================= -->
+    <bottom>
+        <HBox spacing="10" style="-fx-padding:10;">
+
+            <TextField fx:id="txtCantidad" promptText="Cantidad"/>
+
+            <Button text="Agregar" onAction="#agregarCarrito"/>
+            <Button text="Finalizar Venta" onAction="#finalizarVenta"/>
+
+            <Label fx:id="lblTotal" text="Total: 0.0"/>
+
+        </HBox>
+    </bottom>
+
+</BorderPane>

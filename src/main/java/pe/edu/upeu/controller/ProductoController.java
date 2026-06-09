@@ -5,8 +5,16 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.stage.FileChooser;
 import pe.edu.upeu.dao.ProductoDAO;
 import pe.edu.upeu.model.Producto;
+import pe.edu.upeu.model.Usuario;
+
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.nio.file.Files;
 
 public class ProductoController {
 
@@ -16,60 +24,70 @@ public class ProductoController {
     @FXML private TextField txtPrecio;
     @FXML private TextField txtStock;
 
+    // ImageView que muestra la foto del producto en el formulario
+    @FXML private ImageView imgProducto;
+
+    // ================= BOTONES =================
+    @FXML private Button btnGuardar;
+    @FXML private Button btnActualizar;
+    @FXML private Button btnEliminar;
+
     // ================= TABLA =================
     @FXML private TableView<Producto> tablaProductos;
-
     @FXML private TableColumn<Producto, Integer> colId;
-    @FXML private TableColumn<Producto, String> colNombre;
-    @FXML private TableColumn<Producto, String> colDescripcion;
-    @FXML private TableColumn<Producto, Double> colPrecio;
+    @FXML private TableColumn<Producto, String>  colNombre;
+    @FXML private TableColumn<Producto, String>  colDescripcion;
+    @FXML private TableColumn<Producto, Double>  colPrecio;
     @FXML private TableColumn<Producto, Integer> colStock;
 
-    // ================= DAO =================
+    // ================= DEPENDENCIAS =================
     private final ProductoDAO dao = new ProductoDAO();
-
-    // ================= LISTA OBSERVABLE =================
     private ObservableList<Producto> lista;
 
+    // Guarda temporalmente los bytes de la imagen seleccionada.
+    // Se usa al guardar o actualizar el producto.
+    private byte[] imagenSeleccionada = null;
+
+    // Usuario logueado (recibido desde el Login)
+    private Usuario usuarioActual;
+
     // =====================================================
-    // INICIALIZA AUTOMÁTICAMENTE AL ABRIR LA VISTA
+    // INICIALIZAR VISTA
+    // Configura columnas de la tabla y listener de selección
     // =====================================================
     @FXML
     public void initialize() {
 
-        // Conectar columnas con atributos del modelo
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
         colNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
         colDescripcion.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
         colPrecio.setCellValueFactory(new PropertyValueFactory<>("precio"));
         colStock.setCellValueFactory(new PropertyValueFactory<>("stock"));
 
-        // Cargar datos iniciales
         cargarDatos();
 
-        // Evento: seleccionar fila en tabla
+        // Cuando el usuario selecciona una fila,
+        // carga sus datos en el formulario incluyendo la foto
         tablaProductos.getSelectionModel()
                 .selectedItemProperty()
                 .addListener((obs, oldSel, newSel) -> {
-
-                    if (newSel != null) {
-                        cargarFormulario(newSel);
-                    }
+                    if (newSel != null) cargarFormulario(newSel);
                 });
     }
 
     // =====================================================
-    // CARGAR DATOS EN TABLA
+    // CARGAR TABLA
+    // Obtiene todos los productos desde la BD y los muestra
     // =====================================================
     private void cargarDatos() {
-
         lista = FXCollections.observableArrayList(dao.listar());
-
         tablaProductos.setItems(lista);
     }
 
     // =====================================================
-    // CARGAR DATOS EN FORMULARIO
+    // CARGAR FORMULARIO
+    // Rellena los campos con los datos del producto seleccionado.
+    // Si tiene imagen en BD, la muestra en el ImageView.
     // =====================================================
     private void cargarFormulario(Producto p) {
 
@@ -77,27 +95,70 @@ public class ProductoController {
         txtDescripcion.setText(p.getDescripcion());
         txtPrecio.setText(String.valueOf(p.getPrecio()));
         txtStock.setText(String.valueOf(p.getStock()));
+
+        // Si el producto tiene imagen guardada en BD,
+        // convierte los bytes a Image y la muestra
+        if (p.getImagen() != null) {
+            Image img = new Image(new ByteArrayInputStream(p.getImagen()));
+            imgProducto.setImage(img);
+            imagenSeleccionada = p.getImagen(); // mantiene la foto actual
+        } else {
+            // Si no tiene foto, limpia el ImageView
+            imgProducto.setImage(null);
+            imagenSeleccionada = null;
+        }
     }
 
     // =====================================================
-    // VALIDACIÓN DE CAMPOS
+    // SELECCIONAR FOTO
+    // Abre el explorador de archivos para elegir una imagen.
+    // Muestra la imagen al instante en el ImageView.
+    // Guarda los bytes en imagenSeleccionada para luego persistir.
+    // =====================================================
+    @FXML
+    public void seleccionarFoto() {
+
+        // FileChooser filtra solo imágenes
+        FileChooser chooser = new FileChooser();
+        chooser.setTitle("Seleccionar imagen del producto");
+        chooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter(
+                        "Imágenes", "*.png", "*.jpg", "*.jpeg", "*.gif"
+                )
+        );
+
+        // Abre el diálogo y espera la selección del usuario
+        File archivo = chooser.showOpenDialog(null);
+
+        if (archivo != null) {
+            try {
+                // Lee todos los bytes del archivo seleccionado
+                imagenSeleccionada = Files.readAllBytes(archivo.toPath());
+
+                // Muestra la imagen inmediatamente en el formulario
+                Image img = new Image(archivo.toURI().toString());
+                imgProducto.setImage(img);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    // =====================================================
+    // VALIDACIÓN
+    // Verifica que los campos obligatorios no estén vacíos
     // =====================================================
     private boolean validar() {
-
-        if (txtNombre.getText().isEmpty() ||
-                txtDescripcion.getText().isEmpty() ||
-                txtPrecio.getText().isEmpty() ||
-                txtStock.getText().isEmpty()) {
-
-            System.out.println("❌ Campos vacíos");
-            return false;
-        }
-
-        return true;
+        return !txtNombre.getText().isEmpty()
+                && !txtDescripcion.getText().isEmpty()
+                && !txtPrecio.getText().isEmpty()
+                && !txtStock.getText().isEmpty();
     }
 
     // =====================================================
     // GUARDAR
+    // Crea un nuevo producto con todos sus campos + imagen
     // =====================================================
     @FXML
     public void guardar() {
@@ -105,93 +166,103 @@ public class ProductoController {
         if (!validar()) return;
 
         try {
-
             Producto p = new Producto();
-
             p.setNombre(txtNombre.getText());
             p.setDescripcion(txtDescripcion.getText());
             p.setPrecio(Double.parseDouble(txtPrecio.getText()));
             p.setStock(Integer.parseInt(txtStock.getText()));
 
+            // Asigna los bytes de la imagen seleccionada.
+            // Si no se eligió foto, queda null.
+            p.setImagen(imagenSeleccionada);
+
             dao.guardar(p);
-
-            System.out.println("✔ Producto guardado");
-
             limpiar();
             cargarDatos();
 
-        } catch (NumberFormatException e) {
-
-            System.out.println("❌ Error en precio o stock");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     // =====================================================
     // ACTUALIZAR
+    // Modifica el producto seleccionado incluyendo su imagen
     // =====================================================
     @FXML
     public void actualizar() {
 
-        Producto seleccionado =
-                tablaProductos.getSelectionModel().getSelectedItem();
-
-        if (seleccionado == null) {
-            System.out.println("❌ Selecciona un producto");
-            return;
-        }
-
-        if (!validar()) return;
+        Producto p = tablaProductos.getSelectionModel().getSelectedItem();
+        if (p == null) return;
 
         try {
+            p.setNombre(txtNombre.getText());
+            p.setDescripcion(txtDescripcion.getText());
+            p.setPrecio(Double.parseDouble(txtPrecio.getText()));
+            p.setStock(Integer.parseInt(txtStock.getText()));
 
-            seleccionado.setNombre(txtNombre.getText());
-            seleccionado.setDescripcion(txtDescripcion.getText());
-            seleccionado.setPrecio(Double.parseDouble(txtPrecio.getText()));
-            seleccionado.setStock(Integer.parseInt(txtStock.getText()));
+            // Si el usuario seleccionó una foto nueva, se actualiza.
+            // Si no seleccionó nada, mantiene la foto anterior (ya está en imagenSeleccionada).
+            p.setImagen(imagenSeleccionada);
 
-            dao.actualizar(seleccionado);
-
-            System.out.println("✔ Producto actualizado");
-
+            dao.actualizar(p);
             limpiar();
             cargarDatos();
 
-        } catch (NumberFormatException e) {
-
-            System.out.println("❌ Error en datos numéricos");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     // =====================================================
     // ELIMINAR
+    // Borra el producto seleccionado (y su imagen BLOB)
     // =====================================================
     @FXML
     public void eliminar() {
 
-        Producto seleccionado =
-                tablaProductos.getSelectionModel().getSelectedItem();
+        Producto p = tablaProductos.getSelectionModel().getSelectedItem();
+        if (p == null) return;
 
-        if (seleccionado == null) {
-            System.out.println("❌ Selecciona un producto");
-            return;
-        }
-
-        dao.eliminar(seleccionado.getId());
-
-        System.out.println("✔ Producto eliminado");
-
+        dao.eliminar(p.getId());
         limpiar();
         cargarDatos();
     }
 
     // =====================================================
-    // LIMPIAR FORMULARIO
+    // LIMPIAR
+    // Resetea el formulario, la imagen y la variable temporal
     // =====================================================
     private void limpiar() {
-
         txtNombre.clear();
         txtDescripcion.clear();
         txtPrecio.clear();
         txtStock.clear();
+        imgProducto.setImage(null);  // limpia la foto del formulario
+        imagenSeleccionada = null;   // resetea los bytes temporales
+    }
+
+    // =====================================================
+    // RECIBIR USUARIO DESDE LOGIN
+    // =====================================================
+    public void setUsuario(Usuario u) {
+        this.usuarioActual = u;
+        aplicarPermisos();
+    }
+
+    // =====================================================
+    // PERMISOS POR ROL
+    // ADMIN puede todo, USER solo puede ver
+    // =====================================================
+    private void aplicarPermisos() {
+
+        if (usuarioActual == null) return;
+
+        boolean esAdmin = usuarioActual.getRol().equals("ADMIN");
+
+        // Habilita o deshabilita botones según el rol
+        btnGuardar.setDisable(!esAdmin);
+        btnActualizar.setDisable(!esAdmin);
+        btnEliminar.setDisable(!esAdmin);
     }
 }

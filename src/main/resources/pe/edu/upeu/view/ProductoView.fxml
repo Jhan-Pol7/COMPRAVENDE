@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
 <BorderPane xmlns:fx="http://javafx.com/fxml"
@@ -30,13 +31,26 @@
             <TextField fx:id="txtStock"
                        GridPane.rowIndex="3" GridPane.columnIndex="1"/>
 
-            <HBox spacing="10"
-                  GridPane.rowIndex="4"
-                  GridPane.columnIndex="1">
+            <!-- Imagen: muestra la foto seleccionada (150x150 px) -->
+            <Label text="Foto"
+                   GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+            <ImageView fx:id="imgProducto"
+                       fitWidth="150" fitHeight="150"
+                       preserveRatio="true"
+                       GridPane.rowIndex="4" GridPane.columnIndex="1"/>
 
-                <Button text="Guardar" onAction="#guardar"/>
-                <Button text="Actualizar" onAction="#actualizar"/>
-                <Button text="Eliminar" onAction="#eliminar"/>
+            <!-- Botón que abre el explorador de archivos -->
+            <Button text="Seleccionar Foto"
+                    onAction="#seleccionarFoto"
+                    GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+
+            <!-- Botones CRUD -->
+            <HBox spacing="10"
+                  GridPane.rowIndex="6"
+                  GridPane.columnIndex="1">
+                <Button fx:id="btnGuardar"   text="Guardar"    onAction="#guardar"/>
+                <Button fx:id="btnActualizar" text="Actualizar" onAction="#actualizar"/>
+                <Button fx:id="btnEliminar"  text="Eliminar"   onAction="#eliminar"/>
             </HBox>
 
         </GridPane>
@@ -45,17 +59,13 @@
     <!-- ================= TABLA ================= -->
     <center>
         <TableView fx:id="tablaProductos">
-
             <columns>
-
-                <TableColumn fx:id="colId" text="ID"/>
-                <TableColumn fx:id="colNombre" text="Nombre"/>
+                <TableColumn fx:id="colId"          text="ID"/>
+                <TableColumn fx:id="colNombre"      text="Nombre"/>
                 <TableColumn fx:id="colDescripcion" text="Descripción"/>
-                <TableColumn fx:id="colPrecio" text="Precio"/>
-                <TableColumn fx:id="colStock" text="Stock"/>
-
+                <TableColumn fx:id="colPrecio"      text="Precio"/>
+                <TableColumn fx:id="colStock"       text="Stock"/>
             </columns>
-
         </TableView>
     </center>
 
